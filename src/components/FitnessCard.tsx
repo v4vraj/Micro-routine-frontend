@@ -1,18 +1,16 @@
+// src/components/FitnessCard.tsx
 import React from "react";
 import FitnessIcon from "./FitnessIcon";
 import CircularProgress from "./CircularProgress";
-import type { IconType } from "../utils/types";
 
-/**
- * Renders a data card for a specific fitness metric.
- */
 interface FitnessCardProps {
   title: string;
   value: number;
   goal: number;
   unit: string;
-  iconType: IconType;
+  iconType: "steps" | "calories" | "minutes";
   colorClass: string;
+  onSetGoal: () => void; // ✅ new prop
 }
 
 const FitnessCard: React.FC<FitnessCardProps> = ({
@@ -22,31 +20,29 @@ const FitnessCard: React.FC<FitnessCardProps> = ({
   unit,
   iconType,
   colorClass,
+  onSetGoal,
 }) => {
-  const progress = goal > 0 ? (value / goal) * 100 : 0;
-  const formattedValue = Math.round(value);
-  const formattedGoal = Math.round(goal);
+  const percentage = goal > 0 ? (value / goal) * 100 : 0;
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center justify-between">
-      {/* Header */}
-      <div className="flex items-center justify-center w-full mb-4">
-        <FitnessIcon type={iconType} />
-        <h3 className="text-xl font-semibold text-gray-700 ml-2">{title}</h3>
+    <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center">
+      <div className="flex items-center justify-between w-full mb-4">
+        <div className="flex items-center gap-2">
+          <FitnessIcon type={iconType} />
+          <h4 className="text-lg font-semibold text-gray-700">{title}</h4>
+        </div>
+        <button
+          onClick={onSetGoal}
+          className="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
+        >
+          ⚙️ Set Goal
+        </button>
       </div>
 
-      {/* Body (Progress Circle) */}
-      <div className="relative flex items-center justify-center my-4">
-        <CircularProgress percentage={progress} color={colorClass} />
-        <div className="absolute flex flex-col items-center">
-          <span className="text-3xl font-bold text-gray-800">
-            {formattedValue}
-          </span>
-          <span className="text-sm text-gray-500">
-            / {formattedGoal} {unit}
-          </span>
-        </div>
-      </div>
+      <CircularProgress percentage={percentage} color={colorClass} />
+      <p className="text-lg font-semibold mt-4">
+        {value} / {goal} {unit}
+      </p>
     </div>
   );
 };
