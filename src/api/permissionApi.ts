@@ -19,6 +19,7 @@ export const getJiraAuthUrl = async () => {
   const res = await axios.get(`${BACKEND_URL}/permissions/jira/connect`, {
     headers: getAuthHeaders(),
   });
+  console.log("Jira Auth URL:", res.data.auth_url);
   return res.data.auth_url;
 };
 
