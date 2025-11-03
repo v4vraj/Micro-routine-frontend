@@ -41,3 +41,19 @@ export const fetchJiraTickets = async (userId: string) =>
       getAuthHeaders()
     )
   ).data.tickets || [];
+
+export const fetchDailyWellnessScore = async (userId: string) =>
+  (
+    await axios.get(
+      `${API_BASE_URL}/wellness/daily?user_id=${userId}`,
+      getAuthHeaders()
+    )
+  ).data;
+
+export const fetchOverallWellnessScore = async (userId: string) =>
+  (
+    await axios.get(
+      `${API_BASE_URL}/wellness/overall?user_id=${userId}`,
+      getAuthHeaders()
+    )
+  ).data;

@@ -12,6 +12,7 @@ import JiraSection from "../components/dashboard/JiraSection";
 import FitnessSection from "../components/dashboard/FitnessSection";
 import CalendarSection from "../components/dashboard/CalendarSection";
 import GoalModals from "../components/dashboard/GoalModals";
+import WellnessScoreCard from "../components/dashboard/WellnessScoreCard";
 
 import type {
   StepsData,
@@ -87,6 +88,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-white p-4 md:p-8">
       <DashboardHeader />
+      <WellnessScoreCard userId={localStorage.getItem("user_id")!} />
       <JiraSection tickets={tickets} />
       <FitnessSection
         stepsData={stepsData}
