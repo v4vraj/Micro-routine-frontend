@@ -1,14 +1,31 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { LogOut, LayoutDashboard, Shield } from "lucide-react";
+import { LogOut, LayoutDashboard, Shield, User } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 
 const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
   const location = useLocation();
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <nav className="bg-white shadow-md px-6 py-3 flex justify-between items-center">
-      {/* Left Section - App Logo & Links */}
+      {/* Left Section */}
       <div className="flex items-center space-x-6">
         <h1 className="text-2xl font-bold text-indigo-600 tracking-tight">
           FitTrack
@@ -41,18 +58,41 @@ const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Right Section - User Info */}
-      <div className="flex items-center space-x-4">
+      {/* Right Section */}
+      <div className="relative" ref={dropdownRef}>
         {user && (
           <>
-            <span className="text-gray-700 text-sm font-medium">👋 {user}</span>
             <button
-              onClick={logout}
-              className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-3 py-2 rounded-lg transition"
+              onClick={() => setOpen(!open)}
+              className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-3 py-2 rounded-full transition"
             >
-              <LogOut size={16} />
-              Logout
+              <User size={16} />
+              {`${user.first_name ?? ""} ${user.last_name ?? ""}`.trim() ||
+                user.username}{" "}
+              ▼
             </button>
+
+            {/* Dropdown */}
+            {open && (
+              <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border p-1 z-50">
+                <Link
+                  to="/profile"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
+                >
+                  <User size={16} />
+                  Profile
+                </Link>
+
+                <button
+                  onClick={logout}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md"
+                >
+                  <LogOut size={16} />
+                  Logout
+                </button>
+              </div>
+            )}
           </>
         )}
       </div>

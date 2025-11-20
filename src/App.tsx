@@ -12,6 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import Permissions from "./pages/Permissions";
 import MainLayout from "./layouts/MainLayout";
 import OAuthSuccess from "./pages/OAuthSuccess";
+import Profile from "./components/Profile";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="permission" element={<Permissions />} />
           <Route path="/oauth-success" element={<OAuthSuccess />} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
 
         {/* Fallback */}

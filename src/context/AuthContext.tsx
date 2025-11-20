@@ -1,11 +1,12 @@
 import React, { createContext, useState, useContext } from "react";
+import type { User } from "../utils/types";
 
 // The base URL of your Flask API
 const API_URL = "/api/auth";
 
 // Define the shape of the context's dat  a
 interface AuthContextType {
-  user: string | null;
+  user: User | null;
   token: string | null;
   isLoading: boolean;
   error: string | null;
@@ -30,9 +31,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   // Initialize state from localStorage to persist login across page reloads
-  const [user, setUser] = useState<string | null>(() =>
-    localStorage.getItem("user")
-  );
+  const [user, setUser] = useState<User | null>(() => {
+    const saved = localStorage.getItem("user");
+    return saved ? JSON.parse(saved) : null;
+  });
   const [token, setToken] = useState<string | null>(() =>
     localStorage.getItem("token")
   );
@@ -54,13 +56,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.detail || "Failed to login."); // backend sends `detail` for 401
+        throw new Error(data.detail || "Failed to login.");
       }
 
-      // Store user and token properly
-      localStorage.setItem("user", email);
-      localStorage.setItem("token", data.access_token); // ⚡ key fix
-      setUser(email);
+      // Store entire user object instead of just email
+      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("token", data.access_token);
+
+      setUser(data.user); // store full object in state too
       setToken(data.access_token);
     } catch (err: any) {
       setError(err.message);

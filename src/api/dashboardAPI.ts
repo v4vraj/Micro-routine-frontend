@@ -57,3 +57,11 @@ export const fetchOverallWellnessScore = async (userId: string) =>
       getAuthHeaders()
     )
   ).data;
+
+export const fetchAIRecommendation = async (userId: string) =>
+  (
+    await axios.get(
+      `${API_BASE_URL}/ai/recommendations?user_id=${userId}`,
+      getAuthHeaders()
+    )
+  ).data;
